@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LibraTech Register</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div class="register-box">
+
+    <h1>LibraTech</h1>
+
+    <form th:action="@{/register}" th:object="${user}" method="post">
+
+        <input type="text" th:field="*{fullName}" placeholder="Full Name">
+
+        <input type="text" id="username" th:field="*{username}" placeholder="Enter username">
+
+        <input type="email" th:field="*{email}" placeholder="Email">
+
+        <input type="password" th:field="*{password}" placeholder="Password">
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+    <p th:if="${success}" th:text="${success}" style="color:green;"></p>
+
+</div>
+
+</body>
+</html>
