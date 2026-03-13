@@ -28,6 +28,10 @@
     <p th:if="${error}" th:text="${error}" style="color:red;"></p>
     <p th:if="${success}" th:text="${success}" style="color:green;"></p>
 
+    <p style="text-align:center; margin-top:15px;">
+        <a th:href="@{/login}">Already have an account? Login</a>
+    </p>
+
 </div>
 
 </body>

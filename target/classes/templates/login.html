@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LibraTech Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="register-box">
+    <h1>LibraTech Login</h1>
+
+    <form th:action="@{/login}" method="post">
+        <input type="email" name="email" placeholder="Email">
+        <input type="password" name="password" placeholder="Password">
+        <button type="submit">Login</button>
+    </form>
+
+    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+    <p style="text-align:center; margin-top:15px;">
+        <a th:href="@{/register}">Need an account? Register</a>
+    </p>
+</div>
+</body>
+</html>

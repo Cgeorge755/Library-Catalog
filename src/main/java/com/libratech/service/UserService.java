@@ -18,6 +18,12 @@ public class UserService {
     }
 
     public  String register(User user){
+        if(user.getFullName() == null || user.getFullName().isBlank() || user.getUsername() == null ||
+        user.getUsername().isBlank() || user.getEmail() == null || user.getEmail().isBlank() || user.getPassword() == null
+        || user.getPassword().isBlank()) {
+            return "Please fill in all fields";
+        }
+
         if (repo.existsByUsername(user.getUsername()))
             return "Username already exists";
 
@@ -27,6 +33,18 @@ public class UserService {
         repo.save(user);
 
         return "success";
-    }
 
+    }
+    public String login(String email, String password){
+        User user = repo.findByEmail(email);
+
+        if (user == null){
+            return "Email was not found";
+        }
+
+        if (!user.getPassword().equals(password)){
+            return "Incorrect Password";
+        }
+        return "success";
+    }
 }
