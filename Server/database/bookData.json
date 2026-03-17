@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "title": "Things Fall Apart",
+    "author": "Chinua Achebe",
+    "isbn": "9780385474542",
+    "genre": "Classic",
+    "publication_year": 1958,
+    "publisher": "Heinemann",
+    "copies_available": 4,
+    "description": "A classic African novel about Okonkwo and the clash between tradition and colonialism."
+  },
+  {
+    "id": 2,
+    "title": "Half of a Yellow Sun",
+    "author": "Chimamanda Ngozi Adichie",
+    "isbn": "9780007200283",
+    "genre": "Historical Fiction",
+    "publication_year": 2006,
+    "publisher": "Fourth Estate",
+    "copies_available": 6,
+    "description": "A novel set during the Nigerian Civil War."
+  },
+  {
+    "id": 3,
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "isbn": "9780735211292",
+    "genre": "Self Help",
+    "publication_year": 2018,
+    "publisher": "Avery",
+    "copies_available": 10,
+    "description": "A practical guide to building good habits and breaking bad ones."
+  }
+]
