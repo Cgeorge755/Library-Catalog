@@ -4,6 +4,9 @@ import Create from "./pages/Create";
 import Modify from "./pages/Modify";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RentBook from "./pages/RentBook";
+import MyRentals from "./pages/MyRentals";
+import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
 import "./index.css";
 
@@ -17,6 +20,9 @@ function App() {
         <Route path="/modify/:id" element={<Modify />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/rent/:id" element={<RentBook />} />
+        <Route path="/my-rentals" element={<MyRentals />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

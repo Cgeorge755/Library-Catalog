@@ -1,55 +1,178 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../utils/Axios";
 
-function Create() {
-  const navigate = useNavigate();
+function Home() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  const [form, setForm] = useState({
-    title: "",
-    author: "",
-    isbn: "",
-    genre: "",
-    publication_year: "",
-    publisher: "",
-    copies_available: "",
-    description: ""
-  });
+  const [books, setBooks] = useState([]);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("title");
+  const [order, setOrder] = useState("asc");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const fetchBooks = async () => {
+    try {
+      const response = await API.get("/books/", {
+        params: {
+          search,
+          sort_by: sortBy,
+          order
+        }
+      });
+      setBooks(response.data);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    fetchBooks();
+  }, [search, sortBy, order]);
+
+  const handleRent = async (id) => {
+    if (!currentUser) {
+      alert("Please login first");
+      return;
+    }
+
     try {
-      await API.post("/books", {
-        ...form,
-        publication_year: Number(form.publication_year),
-        copies_available: Number(form.copies_available)
-      });
-      navigate("/");
+      await API.put(`/books/${id}/rent`);
+      fetchBooks();
     } catch (error) {
-      console.error("Error creating book:", error);
+      alert(error.response?.data?.detail || "Could not rent book");
+    }
+  };
+
+  const handleReturn = async (id) => {
+    if (!currentUser) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      await API.put(`/books/${id}/return`);
+      fetchBooks();
+    } catch (error) {
+      alert(error.response?.data?.detail || "Could not return book");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await API.delete(`/books/${id}`);
+      fetchBooks();
+    } catch (error) {
+      alert(error.response?.data?.detail || "Could not delete book");
     }
   };
 
   return (
-    <div className="form-page">
-      <h1>Add Book</h1>
-      <form className="book-form" onSubmit={handleSubmit}>
-        <input name="title" placeholder="Title" onChange={handleChange} required />
-        <input name="author" placeholder="Author" onChange={handleChange} required />
-        <input name="isbn" placeholder="ISBN" onChange={handleChange} required />
-        <input name="genre" placeholder="Genre" onChange={handleChange} required />
-        <input name="publication_year" type="number" placeholder="Publication Year" onChange={handleChange} required />
-        <input name="publisher" placeholder="Publisher" onChange={handleChange} required />
-        <input name="copies_available" type="number" placeholder="Copies Available" onChange={handleChange} required />
-        <textarea name="description" placeholder="Description" onChange={handleChange} required />
-        <button type="submit" className="btn primary">Create Book</button>
-      </form>
+    <div className="container">
+      <h1>Libratech Book Catalogue</h1>
+
+      <div className="toolbar">
+        <input
+          type="text"
+          placeholder="Search by title, author, genre, ISBN, or publisher"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="title">Title</option>
+          <option value="author">Author</option>
+          <option value="genre">Genre</option>
+          <option value="publisher">Publisher</option>
+          <option value="publication_year">Publication Year</option>
+          <option value="copies_available">Copies Available</option>
+        </select>
+
+        <select value={order} onChange={(e) => setOrder(e.target.value)}>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+
+      <div className="card-grid">
+        {books.length === 0 ? (
+          <p>No books found.</p>
+        ) : (
+          books.map((book) => (
+            <div className="card" key={book.id}>
+              {book.image_url && (
+                <img
+                  src={book.image_url}
+                  alt={book.title}
+                  style={{
+                    width: "100%",
+                    height: "280px",
+                    objectFit: "cover",
+                    borderRadius: "10px",
+                    marginBottom: "14px"
+                  }}
+                />
+              )}
+
+              <h2>{book.title}</h2>
+              <p><strong>Author:</strong> {book.author}</p>
+              <p><strong>ISBN:</strong> {book.isbn}</p>
+              <p><strong>Genre:</strong> {book.genre}</p>
+              <p><strong>Year:</strong> {book.publication_year}</p>
+              <p><strong>Publisher:</strong> {book.publisher}</p>
+              <p><strong>Description:</strong> {book.description}</p>
+              <p>
+                <strong>Availability:</strong>{" "}
+                <span style={{ color: book.copies_available > 0 ? "green" : "red" }}>
+                  {book.copies_available > 0 ? "Available" : "Not Available"}
+                </span>
+              </p>
+              <p><strong>Copies Available:</strong> {book.copies_available}</p>
+
+              <div className="card-actions">
+                {currentUser?.role === "user" && (
+                  <>
+                    <button
+                      className="btn primary"
+                      onClick={() => handleRent(book.id)}
+                      disabled={book.copies_available <= 0}
+                    >
+                      Rent Book
+                    </button>
+
+                    <button
+                      className="btn secondary"
+                      onClick={() => handleReturn(book.id)}
+                    >
+                      Return Book
+                    </button>
+                  </>
+                )}
+
+                {currentUser?.role === "admin" && (
+                  <>
+                    <Link to={`/modify/${book.id}`} className="btn secondary">
+                      Edit
+                    </Link>
+
+                    <button
+                      className="btn danger"
+                      onClick={() => handleDelete(book.id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+
+                {!currentUser && (
+                  <p style={{ color: "#666" }}>Login to interact with books</p>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
 
-export default Create;
+export default Home;

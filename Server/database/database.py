@@ -4,6 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BOOKS_FILE = os.path.join(BASE_DIR, "bookData.json")
 USERS_FILE = os.path.join(BASE_DIR, "userData.json")
+RENTALS_FILE = os.path.join(BASE_DIR, "rentalsData.json")
 
 
 def read_json(path):
@@ -18,7 +19,7 @@ def read_json(path):
 
 def write_json(path, data):
     with open(path, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=2)
+        json.dump(data, file, indent=2, ensure_ascii=False)
 
 
 def get_books():
@@ -35,3 +36,11 @@ def get_users():
 
 def save_users(data):
     write_json(USERS_FILE, data)
+
+
+def get_rentals():
+    return read_json(RENTALS_FILE)
+
+
+def save_rentals(data):
+    write_json(RENTALS_FILE, data)

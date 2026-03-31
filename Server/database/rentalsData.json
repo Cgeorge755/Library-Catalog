@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "user_id": 2,
+    "user_name": "Normal User",
+    "book_id": 349,
+    "book_title": "'Salem's Lot",
+    "book_image_url": "https://images.gr-assets.com/books/1327891565m/11590.jpg",
+    "rental_days": 3,
+    "cost_per_day": 2.5,
+    "total_cost": 7.5,
+    "rented_on": "2026-03-31",
+    "due_date": "2026-04-03",
+    "returned": false
+  },
+  {
+    "id": 2,
+    "user_id": 2,
+    "user_name": "Normal User",
+    "book_id": 2252,
+    "book_title": "'Tis (Frank McCourt, #2)",
+    "book_image_url": "https://images.gr-assets.com/books/1375947803m/4912.jpg",
+    "rental_days": 7,
+    "cost_per_day": 2.5,
+    "total_cost": 17.5,
+    "rented_on": "2026-03-31",
+    "due_date": "2026-04-07",
+    "returned": false
+  },
+  {
+    "id": 3,
+    "user_id": 2,
+    "user_name": "Normal User",
+    "book_id": 9610,
+    "book_title": "\"حكايات فرغلي المستكاوي \"حكايتى مع كفر السحلاوية",
+    "book_image_url": "https://images.gr-assets.com/books/1360260051m/17339590.jpg",
+    "rental_days": 4,
+    "cost_per_day": 2.5,
+    "total_cost": 10.0,
+    "rented_on": "2026-04-01",
+    "due_date": "2026-04-05",
+    "returned": false
+  }
+]

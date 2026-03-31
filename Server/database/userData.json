@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@libratech.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Normal User",
+    "email": "user@libratech.com",
+    "password": "user123",
+    "role": "user"
+  },
+  {
+    "id": 3,
+    "name": "Muhammad isah",
+    "email": "Muhammadmusamtrr@gmail.com",
+    "password": "Muhammad_04",
+    "role": "admin"
+  }
+]

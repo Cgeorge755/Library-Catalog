@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
-from models.catalog.bookModel import Book
 from database.database import get_books, save_books
+from models.catalog.bookModel import Book
 
 router = APIRouter()
 
@@ -13,21 +13,29 @@ def get_all_books(
 ):
     books = get_books()
 
-    if search:
-        q = search.lower()
+    if search.strip():
+        q = search.lower().strip()
         books = [
             book for book in books
-            if q in book["title"].lower()
-            or q in book["author"].lower()
-            or q in book["genre"].lower()
-            or q in book["isbn"].lower()
-            or q in book["publisher"].lower()
+            if q in str(book.get("title", "")).lower()
+            or q in str(book.get("author", "")).lower()
+            or q in str(book.get("genre", "")).lower()
+            or q in str(book.get("isbn", "")).lower()
+            or q in str(book.get("publisher", "")).lower()
         ]
 
     reverse = order.lower() == "desc"
 
     if sort_by in ["title", "author", "genre", "publisher", "publication_year", "copies_available"]:
-        books = sorted(books, key=lambda x: x.get(sort_by, ""), reverse=reverse)
+        books = sorted(
+            books,
+            key=lambda x: (
+                str(x.get(sort_by, "")).lower()
+                if sort_by in ["title", "author", "genre", "publisher"]
+                else x.get(sort_by, 0)
+            ),
+            reverse=reverse
+        )
 
     return books
 
@@ -61,11 +69,11 @@ def update_book(book_id: int, updated_book: Book):
 
     for index, book in enumerate(books):
         if book["id"] == book_id:
-            data = updated_book.dict()
-            data["id"] = book_id
-            books[index] = data
+            updated_data = updated_book.dict()
+            updated_data["id"] = book_id
+            books[index] = updated_data
             save_books(books)
-            return {"message": "Book updated successfully", "book": data}
+            return {"message": "Book updated successfully", "book": updated_data}
 
     raise HTTPException(status_code=404, detail="Book not found")
 
@@ -80,3 +88,31 @@ def delete_book(book_id: int):
 
     save_books(filtered_books)
     return {"message": "Book deleted successfully"}
+
+
+@router.put("/{book_id}/rent")
+def rent_book(book_id: int):
+    books = get_books()
+
+    for book in books:
+        if book["id"] == book_id:
+            if book.get("copies_available", 0) <= 0:
+                raise HTTPException(status_code=400, detail="Book is not available")
+            book["copies_available"] -= 1
+            save_books(books)
+            return {"message": "Book rented successfully", "book": book}
+
+    raise HTTPException(status_code=404, detail="Book not found")
+
+
+@router.put("/{book_id}/return")
+def return_book(book_id: int):
+    books = get_books()
+
+    for book in books:
+        if book["id"] == book_id:
+            book["copies_available"] += 1
+            save_books(books)
+            return {"message": "Book returned successfully", "book": book}
+
+    raise HTTPException(status_code=404, detail="Book not found")

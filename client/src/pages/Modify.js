@@ -5,6 +5,7 @@ import API from "../utils/Axios";
 function Modify() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const [form, setForm] = useState({
     title: "",
@@ -14,7 +15,8 @@ function Modify() {
     publication_year: "",
     publisher: "",
     copies_available: "",
-    description: ""
+    description: "",
+    image_url: ""
   });
 
   useEffect(() => {
@@ -27,8 +29,14 @@ function Modify() {
       }
     };
 
-    fetchBook();
-  }, [id]);
+    if (currentUser?.role === "admin") {
+      fetchBook();
+    }
+  }, [id, currentUser]);
+
+  if (!currentUser || currentUser.role !== "admin") {
+    return <div className="form-page"><h2>Access denied. Admin only.</h2></div>;
+  }
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,7 +52,7 @@ function Modify() {
       });
       navigate("/");
     } catch (error) {
-      console.error("Error updating book:", error);
+      alert("Could not update book");
     }
   };
 
@@ -59,6 +67,7 @@ function Modify() {
         <input name="publication_year" type="number" value={form.publication_year} placeholder="Publication Year" onChange={handleChange} required />
         <input name="publisher" value={form.publisher} placeholder="Publisher" onChange={handleChange} required />
         <input name="copies_available" type="number" value={form.copies_available} placeholder="Copies Available" onChange={handleChange} required />
+        <input name="image_url" value={form.image_url || ""} placeholder="Book Cover Image URL" onChange={handleChange} />
         <textarea name="description" value={form.description} placeholder="Description" onChange={handleChange} required />
         <button type="submit" className="btn primary">Update Book</button>
       </form>

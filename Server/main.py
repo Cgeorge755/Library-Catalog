@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers.books import router as books_router
 from routers.users import router as users_router
+from routers.rentals import router as rentals_router
 
 app = FastAPI(title="Libratech API")
 
@@ -15,6 +16,7 @@ app.add_middleware(
 
 app.include_router(users_router, prefix="/users", tags=["Users"])
 app.include_router(books_router, prefix="/books", tags=["Books"])
+app.include_router(rentals_router, prefix="/rentals", tags=["Rentals"])
 
 
 @app.get("/")

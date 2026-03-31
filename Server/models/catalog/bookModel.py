@@ -12,3 +12,4 @@ class Book(BaseModel):
     publisher: str
     copies_available: int
     description: str
+    image_url: Optional[str] = ""
