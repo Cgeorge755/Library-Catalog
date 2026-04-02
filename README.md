@@ -1,9 +1,11 @@
+# LibraTech - Library Catalog System
+
+## Overview
 Libratech is a web-based library catalogue system that allows users to manage and browse a collection of books.
 
 The application provides a simple interface for viewing, adding, editing, and deleting books from a catalogue. It uses a React frontend and a FastAPI backend with JSON storage.
 
-# What the Program Does
-
+## What the Program Does
 Libratech allows users to manage a digital library catalogue.
 
 Current features include:
