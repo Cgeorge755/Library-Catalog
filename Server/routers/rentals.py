@@ -53,7 +53,8 @@ def create_rental(data: dict):
         "total_cost": total_cost,
         "rented_on": rented_on.strftime("%Y-%m-%d"),
         "due_date": due_date.strftime("%Y-%m-%d"),
-        "returned": False
+        "returned": False,
+        "renewals": 0
     }
 
     rentals.append(rental)
@@ -71,6 +72,47 @@ def get_user_rentals(user_id: int):
 @router.get("/")
 def get_all_rentals():
     return get_rentals()
+
+
+@router.put("/{rental_id}/renew")
+def renew_rental(rental_id: int):
+    rentals = get_rentals()
+
+    target_rental = None
+    for rental in rentals:
+        if rental["id"] == rental_id:
+            target_rental = rental
+            break
+
+    if not target_rental:
+        raise HTTPException(status_code=404, detail="Rental not found")
+
+    if target_rental["returned"]:
+        raise HTTPException(status_code=400, detail="Cannot renew a returned book")
+
+    renewals = target_rental.get("renewals", 0)
+    if renewals >= 2:
+        raise HTTPException(status_code=400, detail="Maximum renewals (2) reached")
+
+    # Extend due date from current due date by original rental_days
+    current_due = datetime.strptime(target_rental["due_date"], "%Y-%m-%d")
+    extension_days = target_rental["rental_days"]
+    new_due = current_due + timedelta(days=extension_days)
+    renewal_cost = extension_days * COST_PER_DAY
+
+    target_rental["due_date"] = new_due.strftime("%Y-%m-%d")
+    target_rental["total_cost"] = round(target_rental["total_cost"] + renewal_cost, 2)
+    target_rental["renewals"] = renewals + 1
+
+    save_rentals(rentals)
+
+    return {
+        "message": "Rental renewed successfully",
+        "new_due_date": target_rental["due_date"],
+        "renewals_used": target_rental["renewals"],
+        "renewals_remaining": 2 - target_rental["renewals"],
+        "additional_cost": renewal_cost
+    }
 
 
 @router.put("/{rental_id}/return")
