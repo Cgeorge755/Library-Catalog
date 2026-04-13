@@ -90,6 +90,21 @@ The app will open automatically at: `http://localhost:3000`
 
 ---
 
+## How to Use
+
+1. Register a new account or log in using test credentials
+2. Browse or search for books using filters
+3. Click on a book to borrow
+4. View active borrowed books
+5. Renew or return books as needed
+
+Admin user can:
+- Add, edit, and delete books
+- Manage users
+- View reports and system statistics
+
+---
+
 ## Project Structure
 
 ```
@@ -156,6 +171,36 @@ Library-Catalog/
 | PUT | /rentals/{id}/renew | Renew rental |
 | PUT | /rentals/{id}/return | Return rental |
 | GET | /reports/ | Get usage report |
+
+---
+
+## Testing
+
+The system was tested using three approaches:
+- **Clear Box Testing**: Internal logic such as book insertion, search filtering, and authentication
+- **Translucent Box Testing**: File handling (JSON/CSV), API response behavior, and data consistency
+- **Opaque Box Testing**: User workflows such as login, borrowing books, and admin actions
+
+A total of 15 test cases were executed. All critical functionally passed testing, with minor bugs identified and resolved (e.g., renewal date issue, sorting inconsistencies).
+
+---
+
+## Deployment / Running Notes
+
+This project is designed to run locally due to environment and deployment constraints.
+The system can be fully executed using the provided setup instructions for the frontend and backend.
+All required dependencies and steps are documented above to ensure easy setup for new developers.
+
+---
+
+## Contributions
+
+This project was developed collaboratively using GitHub.
+- Charles: Project Manager + Backend
+- Muhammad: Frontend
+- Mariam: Software Quality Lead + Technical Manager
+
+All members contributed equally.
 
 ---
 
